@@ -1,8 +1,9 @@
+#include <float.h>
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-/*@brief Make pretty abort from programm
+/*@brief Make pretty out before exiting programm
  * @param error_msg - message, that would be printed in stderr
  * */
 void error(const char *error_msg);
@@ -65,7 +66,7 @@ double readInput() {
     return inputValue;
   } else {
     error("Non-positive input error!");
-    return -1.0;
+    exit(1);
   }
 }
 
@@ -79,12 +80,12 @@ double calculateResistanceInLamp(const double voltage, const double amperage) {
     return voltage / amperage;
   } else {
     error("Div by zero error!");
-    return -1.0;
+    exit(1);
   }
 }
 
 int compareDouble(double fstDouble, double sndDouble) {
-  if (fabs(fstDouble - sndDouble) < 1e-6) {
+  if (fabs(fstDouble - sndDouble) < DBL_EPSILON) {
     return 1;
   }
   return 0;
@@ -94,5 +95,4 @@ void error(const char *error_msg) {
   fprintf(stderr, "%s\n", error_msg);
   fflush(stderr);
   fflush(stdout);
-  abort();
 }
