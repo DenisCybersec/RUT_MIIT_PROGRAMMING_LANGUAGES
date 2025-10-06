@@ -1,3 +1,4 @@
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -10,6 +11,13 @@ void error(const char *error_msg);
  * @return Value from stdin
  * */
 double readInput();
+
+/* @brief Compare 2 double and return 0 if they != and 1 if they are equal
+ * @param fstDouble - first double to compare
+ * @param sndDouble - second double to compare
+ * @return 0 if they are not equal, 1 if they are equal
+ * */
+int compareDouble(double fstDouble, double sndDouble);
 
 /* @brief Calculate amperage using formula Amp(snd_lamp) = Amp(circuit) -
  * Amp(fst_lamp)
@@ -27,9 +35,6 @@ double calculateAmperage(const double circuitAmperage,
  * */
 double calculateResistanceInLamp(const double voltage, const double amperage);
 
-/* @brief Read amperage in circuit and first lamp amperage from stdin, calculates second lamp amperage and resistance and print it 
- * @param void - no args should be passed
- * */
 int main(void) {
   const double voltageInCircuit = 220.0;
   double circuitAmperage = 0.0;
@@ -70,12 +75,19 @@ double calculateAmperage(const double circuitAmperage,
 }
 
 double calculateResistanceInLamp(const double voltage, const double amperage) {
-  if (amperage != 0) {
+  if (compareDouble(voltage, 0.0)) {
     return voltage / amperage;
   } else {
     error("Div by zero error!");
     return -1.0;
   }
+}
+
+int compareDouble(double fstDouble, double sndDouble) {
+  if (fabs(fstDouble - sndDouble) < 1e-6) {
+    return 1;
+  }
+  return 0;
 }
 
 void error(const char *error_msg) {
