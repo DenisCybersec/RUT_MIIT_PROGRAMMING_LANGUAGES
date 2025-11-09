@@ -47,7 +47,7 @@ int main(void) {
     break;
   default:
     error("Wrong choice of calculation variant");
-    abort();
+    return 1;
   }
   printf("Your square is %.6lf\n", result);
   return 0;
@@ -71,23 +71,20 @@ double calculateRectangle() {
 double readDoubleInput() {
   double inputValue = 0.0;
   scanf("%lf", &inputValue);
-  if (inputValue > 0) {
-    return inputValue;
-  } else {
+  if (inputValue <= 0) {
     error("Non-positive input error!");
     abort();
-  }
+  } 
+  return inputValue;
 }
 
 int readIntegerInput() {
   int inputValue = 0.0;
   scanf("%d", &inputValue);
-  if (inputValue > 0) {
-    return inputValue;
-  } else {
+  if (inputValue <= 0) {
     error("Non-positive input error!");
     abort();
-  }
+  } return inputValue;
 }
 
 void error(const char *error_msg) {
