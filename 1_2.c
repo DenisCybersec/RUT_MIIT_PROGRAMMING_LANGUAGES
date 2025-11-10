@@ -1,73 +1,48 @@
+﻿#define _USE_MATH_DEFINES
 #include <math.h>
 #include <stdio.h>
 
-#define _USE_MATH_DEFINES
 /**
- * @brief Read angle from standard input
- * @return Value from standard input
+ * @brief Calculates the angle value in degrees.
+ * @param radians Angle value in radians.
+ * @return The calculated value in degrees.
  */
-double readValue();
+double radians_to_degrees(const double radians);
 
 /**
- * @brief Turn radian angle into degrees
- * @param[in] radian - angle in radians
- * @return Angle in degrees
+ * @brief Calculates the angle value in minutes (arcminutes).
+ * @param radians Angle value in radians.
+ * @return The calculated value in arcminutes.
  */
-double radianToDegree(const double radian);
+double radians_to_minutes(const double radians);
 
 /**
- * @brief Turn radian angle into minutes
- * @param[in] radian - angle in radians
- * @return Angle in minutes
+ * @brief Calculates the angle value in seconds (arcseconds).
+ * @param radians Angle value in radians.
+ * @return The calculated value in arcseconds.
  */
-double radianToMinutes(const double radian);
+double radians_to_seconds(const double radians);
 
 /**
- * @brief Turn radian angle into seconds
- * @param[in] radian - angle in radians
- * @return Angle in seconds
+ * @brief Program entry point.
+ * @return Returns 0 on successful execution.
  */
-double radianToSeconds(const double radian);
-
-/**
- * @brief Turn radian angle into degrees, minutes and seconds and print pretty
- * prettyOutput
- * @param[in] radian - angle in radians
- * @return void
- */
-void prettyOutput(const double radian);
-
-/**
- * @brief Enter point of program
- * @return 0 on cucess
- */
-int main() {
-  const double radianAngle = readValue();
-  printf("%.6f", radianAngle);
-  prettyOutput(radianAngle);
+int main(void) {
+  double radians;
+  printf("Enter your angle (radians): ");
+  scanf("%lf", &radians);
+  printf("Angle in degrees: %.2lf\n", radians_to_degrees(radians));
+  printf("Angle in minutes: %.2lf\n", radians_to_minutes(radians));
+  printf("Angle in seconds: %.2lf\n", radians_to_seconds(radians));
   return 0;
 }
 
-double radianToDegree(const double radian) { return radian * 180 / M_PI; }
-
-double radianToMinutes(const double radian) {
-  return radianToDegree(radian) * 60;
+double radians_to_degrees(const double radians) {
+  return radians * (180.0 / M_PI);
 }
-
-double radianToSeconds(const double radian) {
-  return radianToDegree(radian) * 3600;
+double radians_to_minutes(const double radians) {
+  return (radians * (180.0 / M_PI)) * 60;
 }
-
-double readValue() {
-  double inputVal = 0;
-  printf("Enter angle in radians: ");
-  scanf("%lf", &inputVal);
-  printf("\n");
-  return inputVal;
-}
-
-void prettyOutput(const double radian) {
-  printf("Angle in degrees %.6f\n", radianToDegree(radian));
-  printf("Angle in minutes %.6f\n", radianToMinutes(radian));
-  printf("Angle in seconds %.6f\n", radianToSeconds(radian));
+double radians_to_seconds(const double radians) {
+  return (radians * (180.0 / M_PI)) * 60 * 60;
 }
