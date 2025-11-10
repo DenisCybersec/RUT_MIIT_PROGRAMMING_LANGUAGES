@@ -163,6 +163,7 @@ int main(void) {
            fstElementNumberIs, fstElementNumberIs + 1);
   }
   free(arr);
+  free(arr_second);
   return 0;
 }
 
