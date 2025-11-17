@@ -28,7 +28,7 @@ double radians_to_seconds(const double radians);
  * @return Returns 0 on successful execution.
  */
 int main(void) {
-  double radians;
+  double radians = 0;
   printf("Enter your angle (radians): ");
   scanf("%lf", &radians);
   printf("Angle in degrees: %.2lf\n", radians_to_degrees(radians));
@@ -46,3 +46,4 @@ double radians_to_minutes(const double radians) {
 double radians_to_seconds(const double radians) {
   return (radians * (180.0 / M_PI)) * 60 * 60;
 }
+
