@@ -5,6 +5,9 @@
 #include <string.h>
 #include <time.h>
 
+void myMemCopy(int *dst, const int *src, const size_t arrSize);
+
+
 /**
  * @brief Replace the second from end element of an array with a value.
  * @param arr Pointer to the integer array.
@@ -33,7 +36,7 @@ int readInteger();
  * @param arr_size Number of elements in the array (must be > 0).
  * @return Maximum absolute value among elements in the array.
  */
-int findMaximumAbs(int *arr, const size_t arr_size);
+int findMaximumAbs(const int *arr, const size_t arr_size);
 
 /**
  * @brief Fill an array with random integers inside a user-provided interval.
@@ -41,7 +44,7 @@ int findMaximumAbs(int *arr, const size_t arr_size);
  * @param arr_size Number of elements in the array.
  * @return void
  */
-void feelRandomNumbers(int *arr, const size_t arr_size);
+void feelRandomNumbers(int *arr, size_t arr_size, const int beginInterval, const int endInterval);
 
 /**
  * @brief Read arr_size integers from stdin into arr.
@@ -57,7 +60,7 @@ void readNumbersFromStdin(int *arr, const size_t arr_size);
  * @param arr_size Number of elements to print.
  * @return void
  */
-void printArray(int *arr, const size_t arr_size);
+void printArray(const int *arr, const size_t arr_size);
 
 /**
  * @brief Count how many elements are divisible by n.
@@ -66,7 +69,7 @@ void printArray(int *arr, const size_t arr_size);
  * @param n Divisor to test (if zero behavior: returns 0).
  * @return Count of elements divisible by n.
  */
-size_t findAmountOfNDivs(int *arr, const size_t arr_size, const int n);
+size_t findAmountOfNDivs(const int *arr, const size_t arr_size, const int n);
 
 /**
  * @brief Find index of the first pair of adjacent elements with differing
@@ -75,19 +78,13 @@ size_t findAmountOfNDivs(int *arr, const size_t arr_size, const int n);
  * @param arr_size Number of elements in the array (must be > 1).
  * @return Index of the first element of the pair, or (size_t)-1 if none.
  */
-size_t firstDiffSigns(int *arr, const size_t arr_size);
+size_t firstDiffSigns(const int *arr, const size_t arr_size);
 
 /**
- * @brief Read interval begin from stdin.
- * @return The interval begin value. Aborts on invalid input.
+ * @brief Read interval value from stdin.
+ * @return The interval value value. Exits on invalid input.
  */
-int readIntervalBegin();
-
-/**
- * @brief Read interval end from stdin.
- * @return The interval end value. Aborts on invalid input.
- */
-int readIntervalEnd();
+int readIntervalValue();
 
 /**
  * @brief Validate that intervalBegin <= intervalEnd.
@@ -116,7 +113,7 @@ bool isNegative(const int n);
  * @oaram randomFill - number used for choosing random filling
  * @oaram manualFIll - number used for choosing manual filling
  */
-enum { randomFill = 1, manualFill = 2 };
+enum { randomFill = 1, manualFill = 2, wrongArraySizeError = 3, wrongArrayFillError = 4, readError = 5, invalidIntervalError = 6};
 
 /**
  * @brief Program entry point demonstrating array operations.
@@ -129,7 +126,28 @@ int main(void) {
     fprintf(stderr, "arr: Memory allocation failed: calloc returned NULL\n");
     abort();
   }
-  fillArray(arr, n);
+  int choice = 0;
+  printf("Enter 1 for random filling\nEnter 2 for manual filling\nEnter your "
+         "choice: ");
+  if (scanf("%d", &choice) != 1) {
+    fprintf(stderr, "Failed to read fill choice from input\n");
+    abort();
+  }
+  switch (choice) {
+    case randomFill:
+        printf("Enter inverval begin: ");
+        const int intervalBegin = readIntervalValue();
+        printf("Enter inverval end: ");
+        const int intervalEnd = readIntervalValue();
+        feelRandomNumbers(arr, n, intervalBegin, intervalEnd);
+        break;
+    case manualFill:
+        readNumbersFromStdin(arr, n);
+        break;
+    default:
+        fprintf(stderr, "Invalid fill choice: %d\n", choice);
+        exit(wrongArrayFillError);
+  }
   printf("Your array is: ");
   printArray(arr, n);
   printf("\n");
@@ -140,7 +158,7 @@ int main(void) {
             "arr_second: Memory allocation failed: calloc returned NULL\n");
     abort();
   }
-  memcpy(arr_second, arr, n * sizeof(int));
+  myMemCopy(arr_second, arr, n * sizeof(int));
   replaceSecondFromEnd(arr_second, n, maximumAbs);
   printf("Replaced second from end element. New array is: ");
   printArray(arr_second, n);
@@ -181,10 +199,10 @@ size_t readArraySize() {
   return variable;
 }
 
-int findMaximumAbs(int *arr, size_t arr_size) {
+int findMaximumAbs(const int *arr, size_t arr_size) {
   if (arr_size == 0) {
     fprintf(stderr, "findMaximumAbs: arr_size must be > 0\n");
-    abort();
+    exit(wrongArraySizeError);
   }
   int mx = arr[0];
   for (size_t i = 0; i < arr_size; i++) {
@@ -204,9 +222,7 @@ int readInteger() {
   return variable;
 }
 
-void feelRandomNumbers(int *arr, size_t arr_size) {
-  int beginInterval = readIntervalBegin();
-  int endInterval = readIntervalEnd();
+void feelRandomNumbers(int *arr, size_t arr_size, const int beginInterval, const int endInterval) {
   checkInterval(beginInterval, endInterval);
   srand((unsigned)time(NULL));
   int range = endInterval - beginInterval + 1;
@@ -221,7 +237,7 @@ void readNumbersFromStdin(int *arr, size_t arr_size) {
   }
 }
 
-size_t findAmountOfNDivs(int *arr, size_t arr_size, int n) {
+size_t findAmountOfNDivs(const int *arr, size_t arr_size, int n) {
   if (n == 0) {
     return 0;
   }
@@ -234,9 +250,9 @@ size_t findAmountOfNDivs(int *arr, size_t arr_size, int n) {
   return counter;
 }
 
-bool isNegative(int n) { return n < 0; }
+bool isNegative(const int n) { return n < 0; }
 
-size_t firstDiffSigns(int *arr, size_t arr_size) {
+size_t firstDiffSigns(const int *arr, size_t arr_size) {
   if (arr_size <= 1) {
     fprintf(stderr, "firstDiffSigns: arr_size must be > 1\n");
     abort();
@@ -258,28 +274,17 @@ void replaceSecondFromEnd(int *arr, size_t arr_size, int replaceValue) {
   arr[arr_size - 2] = replaceValue;
 }
 
-void printArray(int *arr, size_t arr_size) {
+void printArray(const int *arr, size_t arr_size) {
   for (size_t i = 0; i < arr_size; i++) {
     printf("%d ", arr[i]);
   }
 }
 
-int readIntervalBegin() {
+int readInvervalValue() {
   int variable = 0;
-  printf("Enter interval begin: ");
   if (scanf("%d", &variable) != 1) {
-    fprintf(stderr, "Failed to read interval begin from input\n");
-    abort();
-  }
-  return variable;
-}
-
-int readIntervalEnd() {
-  int variable = 0;
-  printf("Enter interval end: ");
-  if (scanf("%d", &variable) != 1) {
-    fprintf(stderr, "Failed to read interval end from input\n");
-    abort();
+    fprintf(stderr, "Failed to read interval value from input\n");
+    exit(readError);
   }
   return variable;
 }
@@ -288,24 +293,16 @@ void checkInterval(int intervalBegin, int intervalEnd) {
   if (intervalBegin > intervalEnd) {
     fprintf(stderr, "Invalid interval: begin (%d) > end (%d)\n", intervalBegin,
             intervalEnd);
-    abort();
+    exit(invalidIntervalError);
   }
 }
 
 void fillArray(int *arr, size_t arr_size) {
-  int choice = 0;
-  printf("Enter 1 for random filling\nEnter 2 for manual filling\nEnter your "
-         "choice: ");
-  if (scanf("%d", &choice) != 1) {
-    fprintf(stderr, "Failed to read fill choice from input\n");
-    abort();
-  }
-  if (choice == randomFill) {
-    feelRandomNumbers(arr, arr_size);
-  } else if (choice == manualFill) {
-    readNumbersFromStdin(arr, arr_size);
-  } else {
-    fprintf(stderr, "Invalid fill choice: %d\n", choice);
-    abort();
-  }
+  
+}
+
+void myMemCopy(int* dst,const int* src, const size_t arrSize){
+    for(int i = 0; i < arrSize;i++){
+        dst[i] = src[i];
+    }
 }
