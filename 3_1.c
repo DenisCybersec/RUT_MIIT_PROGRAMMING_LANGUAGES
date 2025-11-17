@@ -63,7 +63,7 @@ double read_input_value() {
 
 void validate_increment(const double increment) {
   if (increment <= DBL_EPSILON) {
-    printf("Error, step should be possible\n");
+    printf("Error, step should be possitive\n");
     abort();
   }
 }
