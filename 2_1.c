@@ -33,16 +33,21 @@ double calculateTriangle();
 
 /*@brief Reads user input to determine square user wants to calculate and
  * calculate its square*/
+
+/* @brief enum for choice 
+*/
+
+enum {rectangle = 1, triangle = 2};
 int main(void) {
   printf("Enter 1 to calculate square for rectangle\nEnter 2 to calculate "
          "square for triangle\nYour choice: ");
   int choice = readIntegerInput();
   double result = 0.0;
   switch (choice) {
-  case 1:
+  case rectangle:
     result = calculateRectangle();
     break;
-  case 2:
+  case triangle:
     result = calculateTriangle();
     break;
   default:
