@@ -7,7 +7,6 @@
 
 void myMemCopy(int *dst, const int *src, const size_t arrSize);
 
-
 /**
  * @brief Replace the second from end element of an array with a value.
  * @param arr Pointer to the integer array.
@@ -44,7 +43,8 @@ int findMaximumAbs(const int *arr, const size_t arr_size);
  * @param arr_size Number of elements in the array.
  * @return void
  */
-void feelRandomNumbers(int *arr, size_t arr_size, const int beginInterval, const int endInterval);
+void feelRandomNumbers(int *arr, size_t arr_size, const int beginInterval,
+                       const int endInterval);
 
 /**
  * @brief Read arr_size integers from stdin into arr.
@@ -113,7 +113,14 @@ bool isNegative(const int n);
  * @oaram randomFill - number used for choosing random filling
  * @oaram manualFIll - number used for choosing manual filling
  */
-enum { randomFill = 1, manualFill = 2, wrongArraySizeError = 3, wrongArrayFillError = 4, readError = 5, invalidIntervalError = 6};
+enum {
+  randomFill = 1,
+  manualFill = 2,
+  wrongArraySizeError = 3,
+  wrongArrayFillError = 4,
+  readError = 5,
+  invalidIntervalError = 6
+};
 
 /**
  * @brief Program entry point demonstrating array operations.
@@ -134,19 +141,19 @@ int main(void) {
     abort();
   }
   switch (choice) {
-    case randomFill:
-        printf("Enter inverval begin: ");
-        const int intervalBegin = readIntervalValue();
-        printf("Enter inverval end: ");
-        const int intervalEnd = readIntervalValue();
-        feelRandomNumbers(arr, n, intervalBegin, intervalEnd);
-        break;
-    case manualFill:
-        readNumbersFromStdin(arr, n);
-        break;
-    default:
-        fprintf(stderr, "Invalid fill choice: %d\n", choice);
-        exit(wrongArrayFillError);
+  case randomFill:
+    printf("Enter inverval begin: ");
+    const int intervalBegin = readInteger();
+    printf("Enter inverval end: ");
+    const int intervalEnd = readInteger();
+    feelRandomNumbers(arr, n, intervalBegin, intervalEnd);
+    break;
+  case manualFill:
+    readNumbersFromStdin(arr, n);
+    break;
+  default:
+    fprintf(stderr, "Invalid fill choice: %d\n", choice);
+    exit(wrongArrayFillError);
   }
   printf("Your array is: ");
   printArray(arr, n);
@@ -222,7 +229,8 @@ int readInteger() {
   return variable;
 }
 
-void feelRandomNumbers(int *arr, size_t arr_size, const int beginInterval, const int endInterval) {
+void feelRandomNumbers(int *arr, size_t arr_size, const int beginInterval,
+                       const int endInterval) {
   checkInterval(beginInterval, endInterval);
   srand((unsigned)time(NULL));
   int range = endInterval - beginInterval + 1;
@@ -297,12 +305,8 @@ void checkInterval(int intervalBegin, int intervalEnd) {
   }
 }
 
-void fillArray(int *arr, size_t arr_size) {
-  
-}
-
-void myMemCopy(int* dst,const int* src, const size_t arrSize){
-    for(int i = 0; i < arrSize;i++){
-        dst[i] = src[i];
-    }
+void myMemCopy(int *dst, const int *src, const size_t arrSize) {
+  for (int i = 0; i < arrSize; i++) {
+    dst[i] = src[i];
+  }
 }
