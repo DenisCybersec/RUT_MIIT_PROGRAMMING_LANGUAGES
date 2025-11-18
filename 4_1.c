@@ -81,12 +81,6 @@ size_t findAmountOfNDivs(const int *arr, const size_t arr_size, const int n);
 size_t firstDiffSigns(const int *arr, const size_t arr_size);
 
 /**
- * @brief Read interval value from stdin.
- * @return The interval value value. Exits on invalid input.
- */
-int readIntervalValue();
-
-/**
  * @brief Validate that intervalBegin <= intervalEnd.
  * @param intervalBegin Interval start.
  * @param intervalEnd Interval end.
