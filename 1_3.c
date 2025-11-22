@@ -1,98 +1,81 @@
-#include <float.h>
-#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-/*@brief Make pretty out before exiting programm
- * @param error_msg - message, that would be printed in stderr
- * */
-void error(const char *error_msg);
+/**
+ * @brief Calculates the secondary current value
+ * @param totalCurrent total current in the circuit
+ * @param lampCurrent current through the first lamp
+ * @return computed current for the second lamp
+ */
+double computeSecondaryCurrent(const double totalCurrent, const double lampCurrent);
 
-/* @brief Read input from stdin and check, that it > 0
- * @return Value from stdin
- * */
+/**
+ * @brief Determines the resistance value
+ * @param voltage applied voltage
+ * @param current circuit current
+ * @return calculated resistance
+ */
+double computeResistance(const double voltage, const double current);
+
+/**
+ * @brief Reads a numeric value from user input with validation
+ * @return entered numeric value
+ */
 double readInput();
 
-/* @brief Compare 2 double and return 0 if they != and 1 if they are equal
- * @param fstDouble - first double to compare
- * @param sndDouble - second double to compare
- * @return 0 if they are not equal, 1 if they are equal
- * */
-int compareDouble(double fstDouble, double sndDouble);
+/**
+ * @brief Ensures the provided value is positive
+ * @param number value to be validated
+ */
+void validatePositive(const double number);
 
-/* @brief Calculate amperage using formula Amp(snd_lamp) = Amp(circuit) -
- * Amp(fst_lamp)
- * @input circuitAmperage - amperage in circuit
- * @input firstLampAmperage - amperage in firstLamp
- * @return amperage in second lamp
- * */
-double calculateAmperage(const double circuitAmperage,
-                         const double firstLampAmperage);
+/**
+ * @brief Entry point of the program
+ * @return returns 0 if execution completed successfully
+ */
+int main(void)
+{
+    const double voltage = 220.0;
+    printf("Enter total current: ");
+    double totalCurrent = readInput();
+    validatePositive(totalCurrent);
+    
+    printf("Enter first lamp current: ");
+    double lampCurrent = readInput();
+    validatePositive(lampCurrent);
+    
+    printf("Second lamp current = %.2lf\n", computeSecondaryCurrent(totalCurrent, lampCurrent));
+    printf("Resistance = %.2lf", computeResistance(voltage, computeSecondaryCurrent(totalCurrent, lampCurrent)));
 
-/* @brief Calculate resistance using formula Resist = Voltage / amperage
- * @input voltage - voltage in lamp
- * @input amperage - amperage in lamp
- * @return resistance in lamp
- * */
-double calculateResistanceInLamp(const double voltage, const double amperage);
-
-int main(void) {
-  const double voltageInCircuit = 220.0;
-  double circuitAmperage = 0.0;
-  double firstLampAmperage = 0.0;
-
-  printf("Enter amperage in circuit: ");
-  circuitAmperage = readInput();
-  printf("\n");
-  printf("Enter amperage in first lamp: ");
-  firstLampAmperage = readInput();
-
-  const double secondLampAmperage =
-      calculateAmperage(circuitAmperage, firstLampAmperage);
-  if (secondLampAmperage < 0) {
-    error("Error, second lamp voltage is negative");
-    return 1;
-  }
-  printf("Second lamp amperage = %.6lf\n", secondLampAmperage);
-  printf("Second lamp resistance = %.6lf\n",
-         calculateResistanceInLamp(voltageInCircuit, secondLampAmperage));
-  return 0;
+    return 0;
 }
 
-double readInput() {
-  double inputValue = 0.0;
-  scanf("%lf", &inputValue);
-  if (inputValue > 0) {
-    return inputValue;
-  } else {
-    error("Non-positive input error!");
-    exit(1);
-  }
+double computeSecondaryCurrent(const double totalCurrent, const double lampCurrent)
+{
+    return totalCurrent - lampCurrent;
 }
 
-double calculateAmperage(const double circuitAmperage,
-                         const double firstLampAmperage) {
-  return circuitAmperage - firstLampAmperage;
+double computeResistance(const double voltage, const double current)
+{
+    return voltage / current;
 }
 
-double calculateResistanceInLamp(const double voltage, const double amperage) {
-  if (compareDouble(voltage, 0.0)) {
-    return voltage / amperage;
-  } else {
-    error("Div by zero error!");
-    exit(1);
-  }
+double readInput()
+{
+    double number = 0;
+    if (!scanf("%lf", &number))
+    {
+        printf("Input error\n");
+        abort();
+    }
+    return number;
 }
 
-int compareDouble(double fstDouble, double sndDouble) {
-  if (fabs(fstDouble - sndDouble) < DBL_EPSILON) {
-    return 1;
-  }
-  return 0;
-}
-
-void error(const char *error_msg) {
-  fprintf(stderr, "%s\n", error_msg);
-  fflush(stderr);
-  fflush(stdout);
+void validatePositive(const double number)
+{
+    if (number <= 0)
+    {
+        printf("The value must be greater than zero\n");
+        abort();
+    }
 }
